@@ -20,7 +20,7 @@
 |float|Float|Float|
 |String|String|String|
 
-**说明：** Java的类型有对应的Object的版本（例如`long`->`Long`）,在Scala下，转换的方式为：
+**说明：** Java的类型有对应的Object的版本（例如`longMovidius`->`Long`）,在Scala下，转换的方式为：
 ```scala
 x.asInstanceOf[AnyRef]
 ```
@@ -55,9 +55,101 @@ val m = Map[A,B]("x"->1,"y"->2)
 val m = mapOf("x" to 1,"y" to 2)
 ```
 
-
+#### 遍历
+```java
+// 只针对Java 8
+data.forEach((k,v)->{
+    //your function process k,v
+})
+// 如果你还在用Java 7什么的：
+for(Map.Entry<K,V> entry:data.entrySet()){
+    //your function process entry
+}
+```
+**Scala**
+```scala
+data.foreach(kv=>{
+    val key = kv._1
+    val value = kv._2
+    //your function process key and value
+})
+```
+**Kotlin**
+```kotlin
+data.forEach { t, u ->
+    // your function process t and u
+}
+```
 
 #### 细节补充
 Scala的Map有mutable和immutable之分，immutable的Map（默认就是immutable）不能再加入内容，如果需要初始化一个可以加入内容的Map需要使用`scala.collection.mutable`中的类型。
+
+
+### Iterable
+Iterable的意思是可循环的，其中Java8在引入Lambda表达式之后画风变得奇怪了，而且mapReduce之类的操作也好像不是那么回事儿（先要`stream()`一个），我会单独列出说明：
+
+#### map操作
+**Java**
+```java
+// 只针对Java 8
+data.stream().map(x->{
+    //your function process x
+})
+// 如果你还在用Java 7什么的：
+List<Y> yList = new ArrayList<Y>();
+for(X x:data){
+    // process x to y
+    yList.add(y);
+}
+```
+**Scala**
+```scala
+data.map(x=>{
+    //your function process x
+})
+```
+**Kotlin**
+```kotlin
+data.map {
+    //your function process `it`
+}
+```
+需要说明的是，Kotlin中匿名函数的写法和两者都不太一样，默认以it作为传入参数，一般也就这么处理。
+
+#### reduce操作
+**Java**
+```java
+// 只针对Java 8
+data.stream().reduce((a,b)->{
+    //your function process a,b
+})
+// 如果你还在用Java 7什么的：
+// 算了还是洗洗睡吧
+```
+
+
+**Scala**
+```scala
+data.reduce((a,b)=>{
+    // 处理你的a和b
+})
+```
+需要说明的是，Scala支持匿名变量，例如：
+```scala
+data.reduce((a,b)=>a+b)
+```
+可以写作
+```scala
+data.reduce( _ + _ )
+```
+第一个`_`代表第一个变量，第二个`_`代表第二个变量。
+
+**Kotlin**
+```kotlin
+data.reduce {
+    a,b -> // 处理你的a和b
+}
+```
+
 
 （未完待续1s）
